@@ -1,11 +1,10 @@
-/* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
-function Search({ setSearch, setCachedLocations, cachedLocations }) {
+function Search({ setSearch, setCachedLocations }) {
   const [value, setValue] = useState('')
   const searchHandler = () => {
     setSearch(value)
-    setCachedLocations([...cachedLocations, value])
+    setCachedLocations(value)
   }
   return (
     <div className='flex'>

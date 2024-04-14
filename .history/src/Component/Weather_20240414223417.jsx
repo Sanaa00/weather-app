@@ -126,20 +126,20 @@ function Weather() {
   //       <p>Something went wrong...</p>
   //     </div>
   //   )
-  // if (
-  //   locationError ||
-  //   forecastSearchError ||
-  //   currentForcastError ||
-  //   currentWeatherError
-  // )
-  //   return (
-  //     <div className='flex justify-center items-center h-3/4 w-3/4 '>
-  //       <p>
-  //         {locationError?.message}||{forecastSearchError?.message}||
-  //         {currentWeatherError?.message}||{currentForcastError?.message}
-  //       </p>
-  //     </div>
-  //   )
+  if (
+    locationError ||
+    forecastSearchError ||
+    currentForcastError ||
+    currentWeatherError
+  )
+    return (
+      <div className='flex justify-center items-center h-3/4 w-3/4 '>
+        <p>
+          {locationError.message}||{forecastSearchError.message}||
+          {currentWeatherError.message}||{currentForcastError.message}
+        </p>
+      </div>
+    )
 
   return (
     <div className='flex justify-between items-center bg-slate-100 w-3/4 h-3/4 rounded-sm shadow p-5'>

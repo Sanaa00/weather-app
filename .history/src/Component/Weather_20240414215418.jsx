@@ -13,7 +13,7 @@ import DayOfWeek from './DayOfWeek'
 function Weather() {
   const [search, setSearch] = useState('')
   const [cachedLocations, setCachedLocations] = useState([])
-
+  console.log('cached', cachedLocations)
   const [currentLocation, setCurrentLocation] = useState({
     lat: 10,
     lon: 10,
@@ -23,29 +23,22 @@ function Weather() {
     data: currentWeather,
     isLoading: currentweatherLodaing,
     error: currentWeatherError,
+    refetch: refetchCurrentWeather,
   } = useGetCurrentWeatherQuery(currentLocation)
-
+  console.log(currentWeather)
   const {
     data: locationWeather,
     isLoading: locationLoading,
-    isError: locationIsError,
+    // isError: locationIsError,
     error: locationError,
-  } =
-    // search
-    // ? // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGetWeatherQuery(search)
-  // : { data: null, isError: false, error: null, isLoading: false }
+  } = useGetWeatherQuery(search)
 
   const {
     data: daysForecastBySearch,
     isError: forecastSearchIsError,
     error: forecastSearchError,
     isLoading: forecastSearchIsLoading,
-  } =
-    // search
-    // ? // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGet5DayForecastQuery(search)
-  // : { data: null, isError: false, error: null, isLoading: false }
+  } = useGet5DayForecastQuery(search)
 
   const {
     data: daysForecast,
@@ -77,32 +70,24 @@ function Weather() {
       }
     }
 
-    const fetchCachedLocations = () => {
-      const cachedLocationsData = localStorage.getItem('cachedLocations')
-      if (cachedLocationsData) {
-        setCachedLocations(JSON.parse(cachedLocationsData))
-      }
+    const cachedLocationsData = localStorage.getItem('cachedLocations')
+    if (cachedLocationsData) {
+      setCachedLocations(JSON.parse(cachedLocationsData))
     }
 
     fetchData()
-    fetchCachedLocations()
   }, [])
 
   useEffect(() => {
-    const fetchCachedLocations = () => {
-      const cachedLocationsData = localStorage.getItem('cachedCities')
-      if (cachedLocationsData) {
-        setCachedLocations(JSON.parse(cachedLocationsData))
-      }
+    const cachedLocationsData = localStorage.getItem('cachedLocations')
+    if (cachedLocationsData) {
+      setCachedLocations(JSON.parse(cachedLocationsData))
     }
-
-    fetchCachedLocations()
   }, [])
 
   const handleLocationChange = (location) => {
     setSearch(location)
   }
-
   if (
     currentForcastIsLoading ||
     forecastSearchIsLoading ||
@@ -115,32 +100,12 @@ function Weather() {
       </div>
     )
 
-  // if (
-  //   currentForcastIsError ||
-  //   locationIsError ||
-  //   forecastSearchIsError ||
-  //   currentWeatherError
-  // )
-  //   return (
-  //     <div className='flex justify-center items-center h-3/4 w-3/4 '>
-  //       <p>Something went wrong...</p>
-  //     </div>
-  //   )
-  // if (
-  //   locationError ||
-  //   forecastSearchError ||
-  //   currentForcastError ||
-  //   currentWeatherError
-  // )
-  //   return (
-  //     <div className='flex justify-center items-center h-3/4 w-3/4 '>
-  //       <p>
-  //         {locationError?.message}||{forecastSearchError?.message}||
-  //         {currentWeatherError?.message}||{currentForcastError?.message}
-  //       </p>
-  //     </div>
-  //   )
-
+  if (currentForcastIsError || forecastSearchIsError || currentweatherLodaing)
+    return (
+      <div className='flex justify-center items-center h-3/4 w-3/4 '>
+        <p>Something went wrong...</p>
+      </div>
+    )
   return (
     <div className='flex justify-between items-center bg-slate-100 w-3/4 h-3/4 rounded-sm shadow p-5'>
       <div className='flex flex-col justify-center items-center w-1/3 bg-gradient-to-br from-cyan-500 to-sky-500 h-full rounded'>
@@ -177,7 +142,7 @@ function Weather() {
           />
           <div>
             <DropDown
-              locations={cachedLocations}
+              locations={[...cachedLocations]}
               handleLocationChange={handleLocationChange}
               name={currentWeather?.name}
             />

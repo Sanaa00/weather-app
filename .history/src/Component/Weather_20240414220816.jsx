@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Search from './Search'
 import DropDown from './DropDown'
 import {
@@ -11,9 +11,8 @@ import getWeatherIcon from './WeatherIcons'
 import DayOfWeek from './DayOfWeek'
 
 function Weather() {
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(null)
   const [cachedLocations, setCachedLocations] = useState([])
-
   const [currentLocation, setCurrentLocation] = useState({
     lat: 10,
     lon: 10,
@@ -23,6 +22,7 @@ function Weather() {
     data: currentWeather,
     isLoading: currentweatherLodaing,
     error: currentWeatherError,
+    refetch: refetchCurrentWeather,
   } = useGetCurrentWeatherQuery(currentLocation)
 
   const {
@@ -30,22 +30,20 @@ function Weather() {
     isLoading: locationLoading,
     isError: locationIsError,
     error: locationError,
-  } =
-    // search
-    // ? // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGetWeatherQuery(search)
-  // : { data: null, isError: false, error: null, isLoading: false }
+  } = search
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useGetWeatherQuery(search)
+    : { data: null, isError: false, error: null, isLoading: false }
 
   const {
     data: daysForecastBySearch,
     isError: forecastSearchIsError,
     error: forecastSearchError,
     isLoading: forecastSearchIsLoading,
-  } =
-    // search
-    // ? // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGet5DayForecastQuery(search)
-  // : { data: null, isError: false, error: null, isLoading: false }
+  } = search
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useGet5DayForecastQuery(search)
+    : { data: null, isError: false, error: null, isLoading: false }
 
   const {
     data: daysForecast,
@@ -90,7 +88,7 @@ function Weather() {
 
   useEffect(() => {
     const fetchCachedLocations = () => {
-      const cachedLocationsData = localStorage.getItem('cachedCities')
+      const cachedLocationsData = localStorage.getItem('cachedLocations')
       if (cachedLocationsData) {
         setCachedLocations(JSON.parse(cachedLocationsData))
       }
@@ -115,31 +113,17 @@ function Weather() {
       </div>
     )
 
-  // if (
-  //   currentForcastIsError ||
-  //   locationIsError ||
-  //   forecastSearchIsError ||
-  //   currentWeatherError
-  // )
-  //   return (
-  //     <div className='flex justify-center items-center h-3/4 w-3/4 '>
-  //       <p>Something went wrong...</p>
-  //     </div>
-  //   )
-  // if (
-  //   locationError ||
-  //   forecastSearchError ||
-  //   currentForcastError ||
-  //   currentWeatherError
-  // )
-  //   return (
-  //     <div className='flex justify-center items-center h-3/4 w-3/4 '>
-  //       <p>
-  //         {locationError?.message}||{forecastSearchError?.message}||
-  //         {currentWeatherError?.message}||{currentForcastError?.message}
-  //       </p>
-  //     </div>
-  //   )
+  if (
+    currentForcastIsError ||
+    locationIsError ||
+    forecastSearchIsError ||
+    currentWeatherError
+  )
+    return (
+      <div className='flex justify-center items-center h-3/4 w-3/4 '>
+        <p>Something went wrong...</p>
+      </div>
+    )
 
   return (
     <div className='flex justify-between items-center bg-slate-100 w-3/4 h-3/4 rounded-sm shadow p-5'>
@@ -177,7 +161,7 @@ function Weather() {
           />
           <div>
             <DropDown
-              locations={cachedLocations}
+              locations={[...cachedLocations]}
               handleLocationChange={handleLocationChange}
               name={currentWeather?.name}
             />

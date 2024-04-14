@@ -5,7 +5,7 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const [value, setValue] = useState('')
   const searchHandler = () => {
     setSearch(value)
-    setCachedLocations([...cachedLocations, value])
+    setCachedLocations({ ...cachedLocations })
   }
   return (
     <div className='flex'>

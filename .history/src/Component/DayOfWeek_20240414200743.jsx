@@ -11,7 +11,7 @@ function DayOfWeek({ timestamp }) {
   return (
     <div>
       {/* Display the day of the week */}
-      <p className='text-neutral-400 '>{dayOfWeek}</p>
+      <p>{dayOfWeek}</p>
     </div>
   )
 }

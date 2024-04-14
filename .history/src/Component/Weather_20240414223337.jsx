@@ -135,8 +135,8 @@ function Weather() {
   //   return (
   //     <div className='flex justify-center items-center h-3/4 w-3/4 '>
   //       <p>
-  //         {locationError?.message}||{forecastSearchError?.message}||
-  //         {currentWeatherError?.message}||{currentForcastError?.message}
+  //         {locationError.message}||{forecastSearchError.message}||
+  //         {currentWeatherError.message}||{currentForcastError.message}
   //       </p>
   //     </div>
   //   )

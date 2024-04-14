@@ -115,17 +115,17 @@ function Weather() {
       </div>
     )
 
-  // if (
-  //   currentForcastIsError ||
-  //   locationIsError ||
-  //   forecastSearchIsError ||
-  //   currentWeatherError
-  // )
-  //   return (
-  //     <div className='flex justify-center items-center h-3/4 w-3/4 '>
-  //       <p>Something went wrong...</p>
-  //     </div>
-  //   )
+  if (
+    currentForcastIsError ||
+    locationIsError ||
+    forecastSearchIsError ||
+    currentWeatherError
+  )
+    return (
+      <div className='flex justify-center items-center h-3/4 w-3/4 '>
+        <p>Something went wrong...</p>
+      </div>
+    )
   // if (
   //   locationError ||
   //   forecastSearchError ||
