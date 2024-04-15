@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Search from './Search'
 import DropDown from './DropDown'
 import {
@@ -197,7 +197,7 @@ function Weather() {
         </div>
 
         <Daysforecast
-          nextFiveDays={weatherData}
+          nextFiveDays={nextFiveDaysData}
           search={search}
           daysForecast={daysForecast}
           daysForecastBySearch={daysForecastBySearch}

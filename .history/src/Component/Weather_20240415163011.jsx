@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Search from './Search'
 import DropDown from './DropDown'
 import {
@@ -14,6 +14,7 @@ function Weather() {
   const [search, setSearch] = useState('')
   const [cachedLocations, setCachedLocations] = useState([])
   const [nextFiveDaysData, setNextFiveDaysData] = useState([])
+
   const [currentLocation, setCurrentLocation] = useState()
 
   const {
@@ -48,69 +49,67 @@ function Weather() {
   })
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            if (position && position.coords) {
-              const { latitude, longitude } = position.coords
-              const location = { lat: latitude, lon: longitude }
-              setCurrentLocation(location)
-            }
-          },
-          (error) => {
-            console.error('Error fetching geolocation:', error)
-          }
-        )
-      } catch (error) {
-        console.error('Error fetching weather data:', error)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  useEffect(() => {
     const fetchCachedLocations = () => {
-      const cachedLocations = localStorage.getItem('cachedCities')
-      if (cachedLocations) {
-        setCachedLocations(JSON.parse(cachedLocations))
+      const cachedLocationsData = localStorage.getItem('cachedLocations')
+      if (cachedLocationsData) {
+        setCachedLocations(JSON.parse(cachedLocationsData))
       }
     }
 
     fetchCachedLocations()
-  }, [setCachedLocations])
+  }, [])
 
-  const weatherData = useMemo(() => {
-    const data = search ? daysForecastBySearch?.list : daysForecast?.list
-    if (!Array.isArray(data) || !data.length) {
-      return []
-    }
-
-    const filteredData = []
-    const seenDays = new Set()
-
-    for (let entry of data) {
-      const date = new Date(entry.dt * 1000)
-      const day = date.getDate()
-
-      if (!seenDays.has(day)) {
-        seenDays.add(day)
-        filteredData.unshift(entry)
-      }
-
-      if (filteredData.length >= 5) {
-        break
-      }
-    }
-
-    return filteredData.reverse()
-  }, [search, daysForecast, daysForecastBySearch])
+  useEffect(() => {
+    localStorage.setItem('cachedLocations', JSON.stringify(cachedLocations))
+  }, [cachedLocations])
 
   const handleLocationChange = (location) => {
     setSearch(location)
+    setCachedLocations((prevLocations) => {
+      const updatedLocations = [...prevLocations, location]
+      localStorage.setItem('cachedLocations', JSON.stringify(updatedLocations))
+      return updatedLocations
+    })
   }
-
+  const fetchData = async () => {
+    try {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (position && position.coords) {
+            const { latitude, longitude } = position.coords
+            setCurrentLocation({ lat: latitude, lon: longitude })
+          }
+        },
+        (error) => {
+          console.error('Error fetching geolocation:', error)
+          if (error.code === error.PERMISSION_DENIED) {
+            console.error('User denied geolocation access.')
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            console.error('Geolocation information is unavailable.')
+          } else if (error.code === error.TIMEOUT) {
+            console.error('Geolocation request timed out.')
+          } else {
+            console.error('Error fetching geolocation:', error.message)
+          }
+        }
+      )
+    } catch (error) {
+      console.error('Error fetching weather data:', error)
+    }
+  }
+  useEffect(() => {
+    console.log('currentForcastIsLoading:', currentForcastIsLoading)
+    console.log('forecastSearchIsLoading:', forecastSearchIsLoading)
+    console.log('locationLoading:', locationLoading)
+    console.log('currentweatherLodaing:', currentweatherLodaing)
+    console.log('currentLocation:', currentLocation)
+  }, [
+    currentForcastIsLoading,
+    forecastSearchIsLoading,
+    locationLoading,
+    currentweatherLodaing,
+    currentLocation,
+  ])
   if (
     currentForcastIsLoading ||
     forecastSearchIsLoading ||
@@ -152,6 +151,24 @@ function Weather() {
         </p>
       </div>
     )
+  if (
+    locationError &&
+    locationIsError &&
+    currentWeatherError &&
+    currentWeatherError
+  ) {
+    console.log('Location error:', locationError)
+    console.log('Weather error:', currentWeatherError)
+    return (
+      <div className='flex justify-center items-center h-3/4 w-3/4 '>
+        <p>
+          {locationError?.message}
+          {currentWeatherError?.message}
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className='flex justify-between items-center bg-slate-100 w-3/4 h-3/4 rounded-sm shadow p-5'>
       <div className='flex flex-col justify-center items-center w-1/3 bg-gradient-to-br from-cyan-500 to-sky-500 h-full rounded'>
@@ -188,7 +205,6 @@ function Weather() {
           />
           <div>
             <DropDown
-              search={search}
               locations={cachedLocations}
               handleLocationChange={handleLocationChange}
               name={currentWeather?.name}
@@ -197,7 +213,7 @@ function Weather() {
         </div>
 
         <Daysforecast
-          nextFiveDays={weatherData}
+          nextFiveDays={nextFiveDaysData}
           search={search}
           daysForecast={daysForecast}
           daysForecastBySearch={daysForecastBySearch}

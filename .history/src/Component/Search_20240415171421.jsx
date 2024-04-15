@@ -1,9 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
-
 function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const [value, setValue] = useState('')
-
   const searchHandler = () => {
     setSearch(value)
     if (value.trim() !== '') {
@@ -15,7 +14,6 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
       )
     }
   }
-
   useEffect(() => {
     const fetchCachedLocations = () => {
       const cachedLocations = localStorage.getItem('cachedCities')
@@ -26,7 +24,6 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
 
     fetchCachedLocations()
   }, [setCachedLocations])
-
   return (
     <div className='flex'>
       <input

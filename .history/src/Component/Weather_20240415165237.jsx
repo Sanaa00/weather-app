@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState } from 'react'
 import Search from './Search'
 import DropDown from './DropDown'
 import {
@@ -16,46 +17,17 @@ function Weather() {
   const [nextFiveDaysData, setNextFiveDaysData] = useState([])
   const [currentLocation, setCurrentLocation] = useState()
 
-  const {
-    data: currentWeather,
-    isLoading: currentweatherLodaing,
-    error: currentWeatherError,
-  } = useGetCurrentWeatherQuery(currentLocation, {
-    skip: !currentLocation,
-  })
-
-  const {
-    data: locationWeather,
-    isLoading: locationLoading,
-    isError: locationIsError,
-    error: locationError,
-  } = useGetWeatherQuery(search, { skip: search === '' })
-
-  const {
-    data: daysForecastBySearch,
-    isError: forecastSearchIsError,
-    error: forecastSearchError,
-    isLoading: forecastSearchIsLoading,
-  } = useGet5DayForecastQuery(search, { skip: search === '' })
-
-  const {
-    data: daysForecast,
-    isError: currentForcastIsError,
-    error: currentForcastError,
-    isLoading: currentForcastIsLoading,
-  } = useGet5DayForecastByCoordsQuery(currentLocation, {
-    skip: !currentLocation,
-  })
-
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch current location
         navigator.geolocation.getCurrentPosition(
           (position) => {
             if (position && position.coords) {
               const { latitude, longitude } = position.coords
               const location = { lat: latitude, lon: longitude }
               setCurrentLocation(location)
+              localStorage.setItem('currentLocation', JSON.stringify(location))
             }
           },
           (error) => {
@@ -71,6 +43,7 @@ function Weather() {
   }, [])
 
   useEffect(() => {
+    // Fetch cached locations from local storage
     const fetchCachedLocations = () => {
       const cachedLocations = localStorage.getItem('cachedCities')
       if (cachedLocations) {
@@ -79,18 +52,20 @@ function Weather() {
     }
 
     fetchCachedLocations()
-  }, [setCachedLocations])
+  }, [])
 
-  const weatherData = useMemo(() => {
-    const data = search ? daysForecastBySearch?.list : daysForecast?.list
-    if (!Array.isArray(data) || !data.length) {
-      return []
+  useEffect(() => {
+    // Fetch weather forecast for the selected location
+    const weatherData = search ? daysForecastBySearch?.list : daysForecast?.list
+
+    if (!Array.isArray(weatherData) || !weatherData.length) {
+      return
     }
 
     const filteredData = []
     const seenDays = new Set()
 
-    for (let entry of data) {
+    for (let entry of weatherData) {
       const date = new Date(entry.dt * 1000)
       const day = date.getDate()
 
@@ -104,56 +79,21 @@ function Weather() {
       }
     }
 
-    return filteredData.reverse()
+    setNextFiveDaysData(filteredData.reverse())
   }, [search, daysForecast, daysForecastBySearch])
 
   const handleLocationChange = (location) => {
     setSearch(location)
+    // Store the searched location in local storage
+    const updatedCachedLocations = [...new Set([location, ...cachedLocations])]
+    setCachedLocations(updatedCachedLocations)
+    localStorage.setItem('cachedCities', JSON.stringify(updatedCachedLocations))
   }
 
-  if (
-    currentForcastIsLoading ||
-    forecastSearchIsLoading ||
-    locationLoading ||
-    currentweatherLodaing ||
-    !currentLocation
-  )
-    return (
-      <div className='flex justify-center items-center h-3/4 w-3/4 '>
-        <p>Loading...</p>
-      </div>
-    )
-
-  if (
-    locationError &&
-    locationIsError &&
-    currentWeatherError &&
-    currentWeatherError
-  )
-    return (
-      <div className='flex justify-center items-center h-3/4 w-3/4 '>
-        <p>
-          {locationError?.message}
-          {currentWeatherError?.message}
-        </p>
-      </div>
-    )
-  if (
-    forecastSearchError &&
-    currentForcastError &&
-    currentForcastIsError &&
-    forecastSearchIsError
-  )
-    return (
-      <div className='flex justify-center items-center h-3/4 w-3/4 '>
-        <p>
-          {forecastSearchError?.message}
-          {currentForcastError?.message}
-        </p>
-      </div>
-    )
+  // Fetch weather data for the selected location and display UI
   return (
     <div className='flex justify-between items-center bg-slate-100 w-3/4 h-3/4 rounded-sm shadow p-5'>
+      {/* Display current weather */}
       <div className='flex flex-col justify-center items-center w-1/3 bg-gradient-to-br from-cyan-500 to-sky-500 h-full rounded'>
         {getWeatherIcon(
           search ? locationWeather : currentWeather,
@@ -179,13 +119,16 @@ function Weather() {
           </p>
         </div>
       </div>
+      {/* Display search and dropdown */}
       <div className='w-2/3 flex flex-col px-2 h-full'>
         <div className='flex justify-between items-center'>
+          {/* Search component */}
           <Search
             setSearch={setSearch}
             setCachedLocations={setCachedLocations}
             cachedLocations={cachedLocations}
           />
+          {/* Dropdown component */}
           <div>
             <DropDown
               search={search}
@@ -195,9 +138,9 @@ function Weather() {
             />
           </div>
         </div>
-
+        {/* Display weather forecast for the next 5 days */}
         <Daysforecast
-          nextFiveDays={weatherData}
+          nextFiveDays={nextFiveDaysData}
           search={search}
           daysForecast={daysForecast}
           daysForecastBySearch={daysForecastBySearch}

@@ -1,11 +1,17 @@
-const DropDown = ({ locations, handleLocationChange, name }) => {
+/* eslint-disable react/prop-types */
+
+const DropDown = ({ locations, handleLocationChange, name, search }) => {
+  console.log('location', locations)
+  // const dropdownOptions = locations.filter((location) =>
+  //   location.toLowerCase().includes(search.toLowerCase())
+  // )
   return (
     <select
       onChange={(e) => handleLocationChange(e.target.value)}
       className='bg-slate-200 rounded appearance-none py-1 px-4'
     >
       <option value={''}>{name}</option>
-      {locations?.map((location, index) => (
+      {dropdownOptions?.map((location, index) => (
         <option
           key={index}
           value={location}

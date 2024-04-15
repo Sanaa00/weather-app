@@ -1,4 +1,10 @@
+/* eslint-disable react/prop-types */
+
 const DropDown = ({ locations, handleLocationChange, name }) => {
+  console.log('location', locations)
+  // const dropdownOptions = locations.filter((location) =>
+  //   location.toLowerCase().includes(search.toLowerCase())
+  // )
   return (
     <select
       onChange={(e) => handleLocationChange(e.target.value)}

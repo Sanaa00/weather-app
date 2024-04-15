@@ -1,4 +1,7 @@
+/* eslint-disable react/prop-types */
+
 const DropDown = ({ locations, handleLocationChange, name }) => {
+  console.log('location', locations)
   return (
     <select
       onChange={(e) => handleLocationChange(e.target.value)}

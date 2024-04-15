@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState } from 'react'
 import Search from './Search'
 import DropDown from './DropDown'
 import {
@@ -8,21 +9,24 @@ import {
   useGetWeatherQuery,
 } from '../api/api'
 import getWeatherIcon from './WeatherIcons'
+
 import Daysforecast from './Daysforecast'
 
 function Weather() {
   const [search, setSearch] = useState('')
   const [cachedLocations, setCachedLocations] = useState([])
   const [nextFiveDaysData, setNextFiveDaysData] = useState([])
-  const [currentLocation, setCurrentLocation] = useState()
+
+  const [currentLocation, setCurrentLocation] = useState({
+    lat: 10,
+    lon: 10,
+  })
 
   const {
     data: currentWeather,
     isLoading: currentweatherLodaing,
     error: currentWeatherError,
-  } = useGetCurrentWeatherQuery(currentLocation, {
-    skip: !currentLocation,
-  })
+  } = useGetCurrentWeatherQuery(currentLocation)
 
   const {
     data: locationWeather,
@@ -43,9 +47,8 @@ function Weather() {
     isError: currentForcastIsError,
     error: currentForcastError,
     isLoading: currentForcastIsLoading,
-  } = useGet5DayForecastByCoordsQuery(currentLocation, {
-    skip: !currentLocation,
-  })
+  } = useGet5DayForecastByCoordsQuery(currentLocation)
+  console.log('forecast', daysForecast)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,8 +57,7 @@ function Weather() {
           (position) => {
             if (position && position.coords) {
               const { latitude, longitude } = position.coords
-              const location = { lat: latitude, lon: longitude }
-              setCurrentLocation(location)
+              setCurrentLocation({ lat: latitude, lon: longitude })
             }
           },
           (error) => {
@@ -67,45 +69,54 @@ function Weather() {
       }
     }
 
-    fetchData()
-  }, [])
-
-  useEffect(() => {
     const fetchCachedLocations = () => {
-      const cachedLocations = localStorage.getItem('cachedCities')
-      if (cachedLocations) {
-        setCachedLocations(JSON.parse(cachedLocations))
+      const cachedLocationsData = localStorage.getItem('cachedLocations')
+      if (cachedLocationsData) {
+        setCachedLocations(JSON.parse(cachedLocationsData))
       }
     }
 
+    fetchData()
     fetchCachedLocations()
-  }, [setCachedLocations])
+  }, [])
+  useEffect(() => {
+    const weatherData = search ? daysForecastBySearch?.list : daysForecast?.list
 
-  const weatherData = useMemo(() => {
-    const data = search ? daysForecastBySearch?.list : daysForecast?.list
-    if (!Array.isArray(data) || !data.length) {
-      return []
+    if (!Array.isArray(weatherData) || !weatherData.length) {
+      return
     }
 
     const filteredData = []
     const seenDays = new Set()
 
-    for (let entry of data) {
+    for (let entry of weatherData) {
       const date = new Date(entry.dt * 1000)
       const day = date.getDate()
 
       if (!seenDays.has(day)) {
         seenDays.add(day)
-        filteredData.unshift(entry)
+        filteredData.unshift(entry) // Add at the beginning of the array
       }
 
       if (filteredData.length >= 5) {
-        break
+        break // Exit loop when we have 5 unique days
       }
     }
 
-    return filteredData.reverse()
+    setNextFiveDaysData(filteredData.reverse()) // Reverse the array before setting state
   }, [search, daysForecast, daysForecastBySearch])
+
+  console.log('Next five days data:', nextFiveDaysData)
+  useEffect(() => {
+    const fetchCachedLocations = () => {
+      const cachedLocationsData = localStorage.getItem('cachedCities')
+      if (cachedLocationsData) {
+        setCachedLocations(JSON.parse(cachedLocationsData))
+      }
+    }
+
+    fetchCachedLocations()
+  }, [])
 
   const handleLocationChange = (location) => {
     setSearch(location)
@@ -115,8 +126,7 @@ function Weather() {
     currentForcastIsLoading ||
     forecastSearchIsLoading ||
     locationLoading ||
-    currentweatherLodaing ||
-    !currentLocation
+    currentweatherLodaing
   )
     return (
       <div className='flex justify-center items-center h-3/4 w-3/4 '>
@@ -188,7 +198,6 @@ function Weather() {
           />
           <div>
             <DropDown
-              search={search}
               locations={cachedLocations}
               handleLocationChange={handleLocationChange}
               name={currentWeather?.name}
@@ -197,7 +206,7 @@ function Weather() {
         </div>
 
         <Daysforecast
-          nextFiveDays={weatherData}
+          nextFiveDays={nextFiveDaysData}
           search={search}
           daysForecast={daysForecast}
           daysForecastBySearch={daysForecastBySearch}

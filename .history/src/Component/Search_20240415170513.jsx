@@ -1,32 +1,14 @@
-import { useEffect, useState } from 'react'
+/* eslint-disable react/prop-types */
+import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
-
 function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const [value, setValue] = useState('')
-
   const searchHandler = () => {
     setSearch(value)
-    if (value.trim() !== '') {
-      const updatedCachedLocations = [...cachedLocations, value]
-      setCachedLocations(updatedCachedLocations)
-      localStorage.setItem(
-        'cachedCities',
-        JSON.stringify(updatedCachedLocations)
-      )
-    }
+    const updatedCachedLocations = [...cachedLocations, value]
+    setCachedLocations(updatedCachedLocations)
+    localStorage.setItem('cachedCities', JSON.stringify(updatedCachedLocations))
   }
-
-  useEffect(() => {
-    const fetchCachedLocations = () => {
-      const cachedLocations = localStorage.getItem('cachedCities')
-      if (cachedLocations) {
-        setCachedLocations(JSON.parse(cachedLocations))
-      }
-    }
-
-    fetchCachedLocations()
-  }, [setCachedLocations])
-
   return (
     <div className='flex'>
       <input

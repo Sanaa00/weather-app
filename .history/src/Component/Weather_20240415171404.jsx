@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState } from 'react'
 import Search from './Search'
 import DropDown from './DropDown'
 import {
@@ -79,18 +80,18 @@ function Weather() {
     }
 
     fetchCachedLocations()
-  }, [setCachedLocations])
+  }, [setCachedLocations, search])
 
-  const weatherData = useMemo(() => {
-    const data = search ? daysForecastBySearch?.list : daysForecast?.list
-    if (!Array.isArray(data) || !data.length) {
-      return []
+  useEffect(() => {
+    const weatherData = search ? daysForecastBySearch?.list : daysForecast?.list
+    if (!Array.isArray(weatherData) || !weatherData.length) {
+      return
     }
 
     const filteredData = []
     const seenDays = new Set()
 
-    for (let entry of data) {
+    for (let entry of weatherData) {
       const date = new Date(entry.dt * 1000)
       const day = date.getDate()
 
@@ -104,7 +105,7 @@ function Weather() {
       }
     }
 
-    return filteredData.reverse()
+    setNextFiveDaysData(filteredData.reverse())
   }, [search, daysForecast, daysForecastBySearch])
 
   const handleLocationChange = (location) => {
@@ -197,7 +198,7 @@ function Weather() {
         </div>
 
         <Daysforecast
-          nextFiveDays={weatherData}
+          nextFiveDays={nextFiveDaysData}
           search={search}
           daysForecast={daysForecast}
           daysForecastBySearch={daysForecastBySearch}

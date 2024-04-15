@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState } from 'react'
 import Search from './Search'
 import DropDown from './DropDown'
 import {
@@ -14,6 +15,7 @@ function Weather() {
   const [search, setSearch] = useState('')
   const [cachedLocations, setCachedLocations] = useState([])
   const [nextFiveDaysData, setNextFiveDaysData] = useState([])
+
   const [currentLocation, setCurrentLocation] = useState()
 
   const {
@@ -46,6 +48,7 @@ function Weather() {
   } = useGet5DayForecastByCoordsQuery(currentLocation, {
     skip: !currentLocation,
   })
+  console.log('forecast', daysForecast)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,12 +57,21 @@ function Weather() {
           (position) => {
             if (position && position.coords) {
               const { latitude, longitude } = position.coords
-              const location = { lat: latitude, lon: longitude }
-              setCurrentLocation(location)
+              setCurrentLocation({ lat: latitude, lon: longitude })
             }
           },
           (error) => {
             console.error('Error fetching geolocation:', error)
+
+            if (error.code === error.PERMISSION_DENIED) {
+              console.error('User denied geolocation access.')
+            } else if (error.code === error.POSITION_UNAVAILABLE) {
+              console.error('Geolocation information is unavailable.')
+            } else if (error.code === error.TIMEOUT) {
+              console.error('Geolocation request timed out.')
+            } else {
+              console.error('Error fetching geolocation:', error.message)
+            }
           }
         )
       } catch (error) {
@@ -72,40 +84,18 @@ function Weather() {
 
   useEffect(() => {
     const fetchCachedLocations = () => {
-      const cachedLocations = localStorage.getItem('cachedCities')
-      if (cachedLocations) {
-        setCachedLocations(JSON.parse(cachedLocations))
+      const cachedLocationsData = localStorage.getItem('cachedCities')
+      if (cachedLocationsData) {
+        setCachedLocations(JSON.parse(cachedLocationsData))
       }
     }
 
     fetchCachedLocations()
-  }, [setCachedLocations])
+  }, [])
 
-  const weatherData = useMemo(() => {
-    const data = search ? daysForecastBySearch?.list : daysForecast?.list
-    if (!Array.isArray(data) || !data.length) {
-      return []
-    }
-
-    const filteredData = []
-    const seenDays = new Set()
-
-    for (let entry of data) {
-      const date = new Date(entry.dt * 1000)
-      const day = date.getDate()
-
-      if (!seenDays.has(day)) {
-        seenDays.add(day)
-        filteredData.unshift(entry)
-      }
-
-      if (filteredData.length >= 5) {
-        break
-      }
-    }
-
-    return filteredData.reverse()
-  }, [search, daysForecast, daysForecastBySearch])
+  useEffect(() => {
+    localStorage.setItem('cachedCities', JSON.stringify(cachedLocations))
+  }, [cachedLocations])
 
   const handleLocationChange = (location) => {
     setSearch(location)
@@ -188,7 +178,6 @@ function Weather() {
           />
           <div>
             <DropDown
-              search={search}
               locations={cachedLocations}
               handleLocationChange={handleLocationChange}
               name={currentWeather?.name}
@@ -197,7 +186,7 @@ function Weather() {
         </div>
 
         <Daysforecast
-          nextFiveDays={weatherData}
+          nextFiveDays={nextFiveDaysData}
           search={search}
           daysForecast={daysForecast}
           daysForecastBySearch={daysForecastBySearch}

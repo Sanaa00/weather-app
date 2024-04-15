@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+/* eslint-disable react/prop-types */
+import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
-
 function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const [value, setValue] = useState('')
-
   const searchHandler = () => {
     setSearch(value)
     if (value.trim() !== '') {
+      // Check if the value is not an empty string
       const updatedCachedLocations = [...cachedLocations, value]
       setCachedLocations(updatedCachedLocations)
       localStorage.setItem(
@@ -15,18 +15,6 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
       )
     }
   }
-
-  useEffect(() => {
-    const fetchCachedLocations = () => {
-      const cachedLocations = localStorage.getItem('cachedCities')
-      if (cachedLocations) {
-        setCachedLocations(JSON.parse(cachedLocations))
-      }
-    }
-
-    fetchCachedLocations()
-  }, [setCachedLocations])
-
   return (
     <div className='flex'>
       <input

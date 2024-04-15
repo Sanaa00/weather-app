@@ -25,7 +25,7 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
     }
 
     fetchCachedLocations()
-  }, [setCachedLocations])
+  }, [])
 
   return (
     <div className='flex'>

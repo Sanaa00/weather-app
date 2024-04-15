@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Search from './Search'
 import DropDown from './DropDown'
 import {
@@ -111,6 +111,10 @@ function Weather() {
     setSearch(location)
   }
 
+  const handleLocationChange = (location) => {
+    setSearch(location)
+  }
+
   if (
     currentForcastIsLoading ||
     forecastSearchIsLoading ||
@@ -197,7 +201,7 @@ function Weather() {
         </div>
 
         <Daysforecast
-          nextFiveDays={weatherData}
+          nextFiveDays={nextFiveDaysData}
           search={search}
           daysForecast={daysForecast}
           daysForecastBySearch={daysForecastBySearch}

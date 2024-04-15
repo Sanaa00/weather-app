@@ -197,9 +197,9 @@ function Weather() {
         </div>
 
         <Daysforecast
-          nextFiveDays={weatherData}
+          nextFiveDays={nextFiveDaysData}
           search={search}
-          daysForecast={daysForecast}
+          daysForecast={weatherData}
           daysForecastBySearch={daysForecastBySearch}
         />
       </div>
