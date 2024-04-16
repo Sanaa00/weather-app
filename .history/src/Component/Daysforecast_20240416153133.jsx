@@ -17,7 +17,7 @@ function Daysforecast({
             className='flex flex-col justify-center items-center lg:mt-20'
           >
             <DayOfWeek timestamp={day?.dt} />
-            <div className=' mt-10'>
+            <div className=' lg:mt-10'>
               {getWeatherIcon(
                 (search ? daysForecastBySearch : daysForecast)?.list[index],
                 'text-sky-500',
@@ -26,7 +26,7 @@ function Daysforecast({
               )}
             </div>
 
-            <p className=' text-sm lg:text-lg text-neutral-400 mt-10'>
+            <p className='text-lg text-neutral-400 mt-10'>
               {day?.main?.temp}°C
             </p>
             <div className='text-neutral-400 flex justify-center items-center flex-col mt-10 text-xs'>

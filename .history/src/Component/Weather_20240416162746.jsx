@@ -13,6 +13,7 @@ import Daysforecast from './Daysforecast'
 function Weather() {
   const [search, setSearch] = useState('')
   const [cachedLocations, setCachedLocations] = useState([])
+
   const [currentLocation, setCurrentLocation] = useState()
 
   const {

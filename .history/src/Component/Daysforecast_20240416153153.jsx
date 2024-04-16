@@ -26,7 +26,7 @@ function Daysforecast({
               )}
             </div>
 
-            <p className=' text-sm lg:text-lg text-neutral-400 mt-10'>
+            <p className='text-lg text-neutral-400 mt-10'>
               {day?.main?.temp}°C
             </p>
             <div className='text-neutral-400 flex justify-center items-center flex-col mt-10 text-xs'>

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 
@@ -29,12 +28,12 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   }, [setCachedLocations])
 
   return (
-    <div className='flex w-full'>
+    <div className='flex w-full justify-start'>
       <input
         placeholder='Search'
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className='rounded p-2 w-60 h-8 bg-slate-100 border-2 border-slate-200 hover:border-sky-500 focus:bg-slate-100  focus:border-sky-500 focus:outline-none hover:outline-none hover:duration-300 focus:duration-300 duration-300'
+        className='rounded p-2 w-60 h-8  bg-slate-100 border-2 border-slate-200 hover:border-sky-500 focus:bg-slate-100  focus:border-sky-500 focus:outline-none hover:outline-none hover:duration-300 focus:duration-300 duration-300'
       />
       <button
         onClick={() => searchHandler()}

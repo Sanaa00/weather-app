@@ -13,6 +13,7 @@ import Daysforecast from './Daysforecast'
 function Weather() {
   const [search, setSearch] = useState('')
   const [cachedLocations, setCachedLocations] = useState([])
+  const [nextFiveDaysData, setNextFiveDaysData] = useState([])
   const [currentLocation, setCurrentLocation] = useState()
 
   const {
@@ -154,7 +155,7 @@ function Weather() {
   return (
     <div className='flex flex-col lg:flex-row justify-between items-center bg-slate-100 w-full min-h-screen lg:w-3/4 lg:h-3/4 rounded-sm shadow p-5'>
       {' '}
-      <div className='w-full mb-5 lg:mb-0 flex lg:hidden flex-col justify-start items-start  lg:justify-between lg:items-center'>
+      <div className='flex lg:hidden flex-col justify-start items-start  lg:justify-between lg:items-center'>
         <div>
           <Search
             setSearch={setSearch}
@@ -198,7 +199,7 @@ function Weather() {
         </div>
       </div>
       <div className=' w-full lg:w-2/3 flex flex-col px-2 h-full'>
-        <div className='hidden lg:flex flex-col lg:flex-row justify-start items-start  lg:justify-between lg:items-center'>
+        <div className='hidden lg:flex flex-col justify-start items-start  lg:justify-between lg:items-center'>
           <div>
             <Search
               setSearch={setSearch}
