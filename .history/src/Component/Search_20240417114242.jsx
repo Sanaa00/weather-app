@@ -1,30 +1,25 @@
-/* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { useGetCitySuggestionsQuery } from '../api/api'
 
 function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
-  const { data: citySuggestions = [] } = useGetCitySuggestionsQuery(value, {
-    skip: !value,
-  })
+  const { data: citySuggestions = [] } = useGetCitySuggestionsQuery(value)
 
+  // Update suggestions when citySuggestions change
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (value.trim() !== '') {
-        setSuggestions(
-          citySuggestions?.list.map((suggestion) => suggestion.name)
-        )
-      }
-    }, 300)
-
-    return () => clearTimeout(timeoutId)
-  }, [value, citySuggestions])
+    if (value.trim() !== '') {
+      setSuggestions(
+        citySuggestions?.list.map((suggestion) => suggestion.name) || []
+      )
+    } else {
+      setSuggestions([])
+    }
+  }, [citySuggestions, value])
 
   const handleChange = (event) => {
-    const newValue = event.target.value
-    setValue(newValue)
+    setValue(event.target.value)
   }
 
   const handleSearch = () => {
@@ -42,13 +37,12 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const handleSuggestionClick = (suggestion) => {
     setValue(suggestion)
     setSearch(suggestion)
-    setSuggestions([])
+    setSuggestions([]) // Close suggestions after selecting one
   }
 
   return (
-    <div className='flex  lg:flex-row w-full relative'>
+    <div className='flex flex-col lg:flex-row w-full relative'>
       <div>
-        {' '}
         <input
           placeholder='Search'
           value={value}
@@ -69,7 +63,6 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
           </div>
         )}
       </div>
-
       <button
         onClick={handleSearch}
         className='flex justify-center items-center duration-300 hover:duration-300 w-8 h-8 bg-slate-200 rounded-full ml-2'

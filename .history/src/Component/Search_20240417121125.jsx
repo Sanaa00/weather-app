@@ -30,6 +30,7 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const handleSearch = () => {
     setSearch(value)
     if (value.trim() !== '') {
+      // Update cached locations and store in localStorage
       const updatedCachedLocations = [...cachedLocations, value]
       setCachedLocations(updatedCachedLocations)
       localStorage.setItem(

@@ -9,7 +9,7 @@ function Daysforecast({
   daysForecastBySearch,
 }) {
   return (
-    <div className='flex justify-between items-center mb-5'>
+    <div className='flex justify-between items-center'>
       {nextFiveDays?.map((day, index) => {
         return (
           <div

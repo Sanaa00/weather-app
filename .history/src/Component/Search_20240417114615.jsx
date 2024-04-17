@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { useGetCitySuggestionsQuery } from '../api/api'
 
@@ -9,7 +8,8 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const { data: citySuggestions = [] } = useGetCitySuggestionsQuery(value, {
     skip: !value,
   })
-
+  console.log(citySuggestions)
+  // Debounce input changes
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (value.trim() !== '') {
@@ -30,6 +30,7 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const handleSearch = () => {
     setSearch(value)
     if (value.trim() !== '') {
+      // Update cached locations and store in localStorage
       const updatedCachedLocations = [...cachedLocations, value]
       setCachedLocations(updatedCachedLocations)
       localStorage.setItem(
@@ -42,11 +43,11 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const handleSuggestionClick = (suggestion) => {
     setValue(suggestion)
     setSearch(suggestion)
-    setSuggestions([])
+    setSuggestions([]) // Clear suggestions after selecting one
   }
 
   return (
-    <div className='flex  lg:flex-row w-full relative'>
+    <div className='flex flex-col lg:flex-row w-full relative'>
       <div>
         {' '}
         <input

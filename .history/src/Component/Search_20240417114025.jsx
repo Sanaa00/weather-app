@@ -1,15 +1,13 @@
-/* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { useGetCitySuggestionsQuery } from '../api/api'
 
 function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
-  const { data: citySuggestions = [] } = useGetCitySuggestionsQuery(value, {
-    skip: !value,
-  })
-
+  const { data: citySuggestions = [] } = useGetCitySuggestionsQuery(value)
+  console.log(citySuggestions)
+  // Debounce input changes
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (value.trim() !== '') {
@@ -30,6 +28,7 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const handleSearch = () => {
     setSearch(value)
     if (value.trim() !== '') {
+      // Update cached locations and store in localStorage
       const updatedCachedLocations = [...cachedLocations, value]
       setCachedLocations(updatedCachedLocations)
       localStorage.setItem(
@@ -42,11 +41,11 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const handleSuggestionClick = (suggestion) => {
     setValue(suggestion)
     setSearch(suggestion)
-    setSuggestions([])
+    setSuggestions([]) // Clear suggestions after selecting one
   }
 
   return (
-    <div className='flex  lg:flex-row w-full relative'>
+    <div className='flex flex-col lg:flex-row w-full relative'>
       <div>
         {' '}
         <input
@@ -56,7 +55,7 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
           className='rounded p-2 w-60 h-8 bg-slate-100 border-2 border-slate-200 hover:border-sky-500 focus:bg-slate-100 focus:border-sky-500 focus:outline-none hover:outline-none hover:duration-300 focus:duration-300 duration-300'
         />
         {suggestions.length > 0 && (
-          <div className='absolute bg-slate-100 border border-gray-200 rounded mt-1 w-60'>
+          <div className='absolute bg-white border border-gray-200 rounded mt-1 w-60'>
             {suggestions.map((suggestion, index) => (
               <div
                 key={index}

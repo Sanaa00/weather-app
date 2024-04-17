@@ -152,9 +152,9 @@ function Weather() {
       </div>
     )
   return (
-    <div className=' flex flex-col lg:flex-row justify-between items-center bg-slate-100 w-full h-full lg:w-3/4 lg:h-3/4 rounded-sm shadow p-5'>
+    <div className=' flex flex-col lg:flex-row justify-between items-center bg-slate-100 w-full min-h-screen lg:w-3/4 lg:h-3/4 rounded-sm shadow p-5'>
       {' '}
-      <div className='w-full mb-5 lg:mb-0 flex lg:hidden  flex-col justify-start items-start  lg:justify-between lg:items-center'>
+      {/* <div className='w-full mb-5 lg:mb-0 flex lg:hidden  flex-col justify-start items-start  lg:justify-between lg:items-center'>
         <Search
           setSearch={setSearch}
           setCachedLocations={setCachedLocations}
@@ -169,8 +169,8 @@ function Weather() {
             name={currentWeather?.name}
           />
         </div>
-      </div>
-      <div className=' py-10 flex flex-col justify-center items-center w-full h-96 lg:w-1/3 bg-gradient-to-br from-cyan-500 to-sky-500 lg:h-full rounded'>
+      </div> */}
+      <div className='flex flex-col justify-center items-center w-full h-96 lg:w-1/3 bg-gradient-to-br from-cyan-500 to-sky-500 lg:h-full rounded'>
         {getWeatherIcon(
           search ? locationWeather : currentWeather,
           'text-slate-100',

@@ -4,7 +4,7 @@ function DayOfWeek({ timestamp }) {
   const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' })
   return (
     <div>
-      <p className='text-neutral-400 text-sm lg:text-md'>{dayOfWeek}</p>
+      <p className='text-neutral-400 text-sm'>{dayOfWeek}</p>
     </div>
   )
 }

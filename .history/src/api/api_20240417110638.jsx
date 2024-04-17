@@ -34,7 +34,7 @@ export const apiSlice = createApi({
     }),
     getCitySuggestions: builder.query({
       query: (input) =>
-        `/find?q=${input}&appid=${import.meta.env.VITE_API_KEY}`,
+        `/find?q=${input}&type=like&mode=json&cnt=5&units=metric`,
     }),
   }),
 })

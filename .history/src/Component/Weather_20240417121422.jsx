@@ -152,7 +152,7 @@ function Weather() {
       </div>
     )
   return (
-    <div className=' flex flex-col lg:flex-row justify-between items-center bg-slate-100 w-full h-full lg:w-3/4 lg:h-3/4 rounded-sm shadow p-5'>
+    <div className=' flex flex-col lg:flex-row justify-between items-center bg-slate-100 w-full min-h-screen lg:h-screen lg:w-3/4 lg:h-3/4 rounded-sm shadow p-5'>
       {' '}
       <div className='w-full mb-5 lg:mb-0 flex lg:hidden  flex-col justify-start items-start  lg:justify-between lg:items-center'>
         <Search
