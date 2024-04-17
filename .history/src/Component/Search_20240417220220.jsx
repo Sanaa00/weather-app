@@ -6,7 +6,7 @@ import { useGetCitySuggestionsQuery } from '../api/api'
 function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false) // State to manage dropdown visibility
   const { data: citySuggestions = [] } = useGetCitySuggestionsQuery(value, {
     skip: !value,
   })
@@ -51,8 +51,9 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
   }
 
   return (
-    <div className='flex lg:flex-row w-full relative'>
+    <div className='flex  lg:flex-row w-full relative'>
       <div>
+        {' '}
         <input
           placeholder='Search'
           value={value}
@@ -73,6 +74,7 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
           </div>
         )}
       </div>
+
       <button
         onClick={handleSearch}
         className='flex justify-center items-center duration-300 hover:duration-300 w-8 h-8 bg-slate-200 rounded-full ml-2'

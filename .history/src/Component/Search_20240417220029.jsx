@@ -17,7 +17,6 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
         setSuggestions(
           citySuggestions?.list.map((suggestion) => suggestion.name)
         )
-        setIsDropdownOpen(true)
       }
     }, 300)
 
@@ -34,25 +33,24 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
     if (value.trim() !== '') {
       updateCachedLocations(value)
     }
-    setIsDropdownOpen(false)
+    setIsDropdownOpen(false) // Close dropdown after search
   }
 
   const handleSuggestionClick = (suggestion) => {
     setValue(suggestion)
     setSearch(suggestion)
     updateCachedLocations(suggestion)
-    setIsDropdownOpen(false)
+    setIsDropdownOpen(false) // Close dropdown after suggestion click
   }
-
   const updateCachedLocations = (location) => {
     const updatedCachedLocations = [...new Set([...cachedLocations, location])]
     setCachedLocations(updatedCachedLocations)
     localStorage.setItem('cachedCities', JSON.stringify(updatedCachedLocations))
   }
-
   return (
-    <div className='flex lg:flex-row w-full relative'>
+    <div className='flex  lg:flex-row w-full relative'>
       <div>
+        {' '}
         <input
           placeholder='Search'
           value={value}
@@ -73,6 +71,7 @@ function Search({ setSearch, setCachedLocations, cachedLocations }) {
           </div>
         )}
       </div>
+
       <button
         onClick={handleSearch}
         className='flex justify-center items-center duration-300 hover:duration-300 w-8 h-8 bg-slate-200 rounded-full ml-2'

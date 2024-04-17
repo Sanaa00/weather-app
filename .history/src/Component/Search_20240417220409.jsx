@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { useGetCitySuggestionsQuery } from '../api/api'
@@ -6,7 +5,7 @@ import { useGetCitySuggestionsQuery } from '../api/api'
 function Search({ setSearch, setCachedLocations, cachedLocations }) {
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false) // State to manage dropdown visibility
   const { data: citySuggestions = [] } = useGetCitySuggestionsQuery(value, {
     skip: !value,
   })

@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 const DropDown = ({ locations, handleLocationChange, name }) => {
+  // Filter out duplicate locations
   const uniqueLocations = [...new Set(locations)]
 
   return (
